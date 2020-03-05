@@ -1,0 +1,36 @@
+---
+version: "3.7"
+services:
+  cart-frontend:
+    build:
+      context: ./frontend
+    image: vaishakhvh/cart-fe:2.0
+    depends_on:
+      - cart-database
+    environment:
+      MY_DB_HOST_WRITE: cart-database
+      MY_DB_HOST_READ: cart-database
+      MY_DB_NAME: testDB
+      MY_DB_USER: testuser
+      MY_DB_PASS: test123
+    ports:
+      - "9000:80"
+    volumes:
+      - type: volume
+        source: cart-frontend-logvol
+        target: /var/log
+  cart-database:
+    build:
+      context: ./database
+    image: vaishakhvh/cart-db:2.0
+    volumes:
+      - type: volume
+        source: cart-db-vol
+        target: /var/lib/mysql
+volumes:
+  cart-frontend-logvol:
+  cart-db-vol:
+networks:
+  default:
+    external:
+      name: mynetwork
